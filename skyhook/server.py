@@ -206,6 +206,8 @@ class Server:
         else:
             self.port = self.__get_host_program_port(host_program)
 
+        ensure_valid_port(self.port)
+
         self.server_address = "127.0.0.1" if only_allow_localhost_connections else "0.0.0.0"
 
         self.__host_program: Optional[str] = host_program
@@ -580,6 +582,8 @@ class SkyHookHTTPRequestHandler(BaseHTTPRequestHandler):
         if not self.quiet:
             super().log_message(fmt, *args)
 
+def ensure_valid_port(port_number: int) -> None:
+    assert 0 < port_number <= 65_535, f"Port number {port_number} needs to be between 0 and 65535"
 
 def port_in_use(port_number: int, host: str = "127.0.0.1", timeout: float = 0.125) -> bool:
     """
@@ -591,6 +595,7 @@ def port_in_use(port_number: int, host: str = "127.0.0.1", timeout: float = 0.12
     :param timeout: when the socket should time out
     :return: True if port is in use, False otherwise
     """
+    ensure_valid_port(port_number)
     sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(timeout)
     result: int = sock.connect_ex((host, port_number))
