@@ -1,3 +1,5 @@
+__version__ = "3.0.4"
+
 from .logger import Logger
 logger = Logger()
 

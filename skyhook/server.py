@@ -640,8 +640,11 @@ def start_server_in_thread(
     :param only_allow_localhost_connections: *bool* if set to false, also allow connections from other clients on the network
     :return: *List* containing Thread and Server or None values if server couldn't start
     """
-    if host_program != "":
+    if host_program != "" and port is None:
         port = getattr(Ports, host_program)
+
+    if port is None:
+        port = getattr(Ports, Constants.undefined)
 
     host = "127.0.0.1" if only_allow_localhost_connections else "0.0.0.0"
     if port_in_use(port, host):
@@ -686,7 +689,7 @@ def start_executor_server_in_thread(
     :param only_allow_localhost_connections: *bool* if set to false, also allow connections from other clients on the network
     :return: *List* containing Thread, MainThreadExecutor and Server or None values if server couldn't start
     """
-    if host_program != "":
+    if host_program != "" and port is None:
         port = getattr(Ports, host_program)
 
     if port is None:
@@ -763,7 +766,7 @@ def start_blocking_server(
     :param only_allow_localhost_connections: *bool* if set to false, also allow connections from other clients on the network
     :return: Server instance or None if server couldn't start
     """
-    if host_program != "":
+    if host_program != "" and port is None:
         port = getattr(Ports, host_program)
 
     if port is None:
