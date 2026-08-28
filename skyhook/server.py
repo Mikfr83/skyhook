@@ -22,6 +22,9 @@ logger = Logger()
 
 T = TypeVar('T')
 
+# how often to re-check for the main-thread executor's reply while waiting
+EXECUTOR_POLL_INTERVAL = 0.01  # seconds
+
 
 class EventEmitter:
     """
@@ -445,6 +448,11 @@ class Server:
                 if current_time - start_time > timeout:
                     self.executor_reply = make_result_json(success=False, return_value=Errors.TIMEOUT,
                                                            command=function_name)
+                    break
+
+                # sleep between polls, otherwise this loop pegs a CPU core for the whole wait
+                time.sleep(EXECUTOR_POLL_INTERVAL)
+
             return self.executor_reply
 
         module: Optional[str] = parameters_dict.get(Constants.module)
