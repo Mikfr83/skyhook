@@ -11,6 +11,10 @@ except:
     pass
     # print("failed to import websockets/asyncio")
 
+# requests interprets timeout as SECONDS, not milliseconds
+DEFAULT_TIMEOUT = 30  # seconds
+
+
 class Client(object):
     """
     Base client from which all other Clients will inherit
@@ -21,7 +25,7 @@ class Client(object):
         self.host_address = host_address
         self.port = port
 
-        self.__timeout = 1000
+        self.__timeout = DEFAULT_TIMEOUT
         self.__echo_execution = True
         self.__echo_payload = True
         self._is_executing = False
@@ -104,7 +108,7 @@ class Client(object):
 
         :param command: *string* or *function* The command name or the actual function object that you can import from the modules module
         :param parameters: *dict* of the parameters (arguments) for the the command. These have to match the argument names on the function in the module exactly
-        :param timeout: *float* time in seconds after which the request will timeout. If not set here, self.time_out will be used (1.5 by default)
+        :param timeout: *float* time in seconds after which the request will timeout. If not set here, the client's timeout will be used (DEFAULT_TIMEOUT, 30 seconds, unless changed via set_timeout)
         :return: *dict* of the response coming from the server
 
         From a SkyHook server it looks like:
@@ -222,7 +226,7 @@ class UnrealClient(Client):
 
         :param command: *string* command name
         :param parameters: *dict* of the parameters (arguments) for the the command. These have to match the argument names on the function in the module exactly
-        :param timeout: *float* time in seconds after which the request will timeout. If not set here, self.time_out will be used (1.5 by default)
+        :param timeout: *float* time in seconds after which the request will timeout. If not set here, the client's timeout will be used (DEFAULT_TIMEOUT, 30 seconds, unless changed via set_timeout)
         :param function: *bool* ignore, not used
         :param property: *bool* ignore, not used
         :return: *dict* of the response coming from Web Remote Control
